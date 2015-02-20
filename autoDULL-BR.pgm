@@ -1,3 +1,5 @@
+//Changes in version BlueRedv1 (2015-01-22) slh
+// - adding blue light control (channel 7) to the existing red light control
 //Changes in version 4a (072805):
 //	-removed option to take RL images because all you really get to see is the reflections of the LEDs
 //Changes in version 4:
@@ -12,12 +14,13 @@ SetImage(1,1024,2,1,1024,2)
 SetReadoutTime(32)
 dawn=0
 dusk=25
-bits=128
+Rbits=128
+Bbits=128
 resolution=2
 exposure=20
 autodecay=10
 input("What number is this experiment?", expt$)
-input("Is this a generic experiment? (20-min exposures; 2-hr resolution; 128 bits of cRL; starting ASAP)", default$)
+input("Is this a generic experiment? (20-min exposures; 2-hr resolution; 128 bits cRL and 128 cBL; starting ASAP)", default$)
 input("Comments about experiment:", comments$)
 if (asc(default$)!=121) and (asc(default$)!=89) then gosub .setparameters
 SetSingleScan(exposure*60)
@@ -49,14 +52,14 @@ if (asc(default$)!=121) and (asc(default$)!=89) then
 	endif
 	if toLL==1 then print("Transferred to LL after ";freerunwhen;" L/D cycles")
 	if toDD==1 then print("Transferred to DD after ";freerunwhen;" L/D cycles")
-	if (dawn==25) and (dusk==25) then print(resolution;" hour resolution") else print(resolution;" hour resolution in ";bits;" bits RL")
+	if (dawn==25) and (dusk==25) then print(resolution;" hour resolution") else print(resolution;" hour resolution in ";Rbits;" bits RL, " ;Bbits;" bits BL")
 	print("Autodecay for ";autodecay;" minutes prior to ";exposure;"-min exposures")
 	if autofluor==1 then print("While growing in light, a 2-minute autofluorescence exposure was taken prior to each image")
 else
-	print("Generic experiment: 20-min exposures; 2-hr resolution; 128 bits of cRL")
+	print("Generic experiment: 20-min exposures; 2-hr resolution; 128 bits cRL and cBL")
 endif
 
-print("autoDULL v4a (072805)")
+print("autoDULL BlueRed (2015-01-22)")
 
 gosub .timestamp
 if (timestamp>=dawn) and (timestamp<=dusk) then lights=1 else lights=0
@@ -66,10 +69,12 @@ if lights==1 then
 		gosub .autofluor
 	endif
 	print(date$(),time$(),"BEGINNING OF EXPERIMENT: LIGHTS ON")
-	I2CBurstWrite(41,6,bits)
+	I2CBurstWrite(41,6,Rbits)
+	I2CBurstWrite(41,7,Bbits)
 else
 	print(date$(),time$(),"BEGINNING OF EXPERIMENT: LIGHTS OFF")
 	I2CBurstWrite(41,6,0)
+	I2CBurstWrite(41,7,0)
 endif
 
 while starttime>timestamp
@@ -90,6 +95,7 @@ while i<1000
 	lessdelay=0
 	if lights==1 then
 		I2CBurstWrite(41,6,0)
+		I2CBurstWrite(41,7,0)
 		print(date$(),time$(),,"LIGHTS OFF FOR IMAGING")
 		if autofluor==1 then gosub .autofluor
 	endif
@@ -131,7 +137,8 @@ wend
 	if (asc(freerun$)==76) or (asc(freerun$)==108) then toLL=1
 	if (asc(freerun$)==68) or (asc(freerun$)==100) then toDD=1
 	if (toLL+toDD)==1 then input("Entrain for how many days in L/D prior to freerunning? (e.g., for LD-LD-LL, type 2)",freerunwhen)
-	if dawn!=25 then input("How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)",bits)
+	if dawn!=25 then input("How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)",Rbits)
+	if dawn!=25 then input("How many bits of blue light do you want to expose the plants to? (e.g. 128 for a normal experiment)",Bbits)
 	input("How many hours do you want between starting to acquire images?",resolution)
 	input("How many minutes would you like to let your seedlings chill out in the dark?",autodecay)
 	input("For how many minutes do your plants like to be exposed?",exposure)
@@ -149,7 +156,8 @@ return
 .autofluor
 	noti=i+1							   
 	noti$=str$(noti)
-	I2CBurstWrite(41,6,0)							
+	I2CBurstWrite(41,6,0)	
+	I2CBurstWrite(41,7,0)							
 	print(date$(),time$(),,,,,"2-MIN AUTOFLUORESCENCE IMAGE ";noti;" STARTED")
 	SetSingleScan(120)
 	run()							   
@@ -173,7 +181,8 @@ return
 	endif
 	if turnlightson==1 then lights=1
 	if turnlightson==0 then lights=0
-	if lights==1 then I2CBurstWrite(41,6,bits)
+	if lights==1 then I2CBurstWrite(41,6,Rbits)
+	if lights==1 then I2CBurstWrite(41,7,Bbits)
 return
 
 .startfreerun
