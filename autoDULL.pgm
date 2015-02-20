@@ -39,7 +39,7 @@ if (asc(default$)!=121) and (asc(default$)!=89) then
 	else
 		if (dawn==25) and (dusk==25) then print("Imaged in DD") else print("DAWN=";dawn,,"DUSK=";dusk)
 	endif
-	print(resolution;" hour resolution in ";bits;" bits RL")
+	if (dawn==25) and (dusk==25) then print(resolution;" hour resolution") else print(resolution;" hour resolution in ";bits;" bits RL")
 	print("Autodecay for ";autodecay;" minutes prior to ";exposure;"-min exposures")
 else
 	print("Generic experiment: 20-min exposures; 2-hr resolution; 128 bits of cRL")
@@ -64,12 +64,12 @@ while starttime>timestamp
 	if turnlightson==0 then lights=0
 	if lights==1 then I2CBurstWrite(41,6,bits)
 wend
-
+nexttime=starttime
 
 i=0
 while i<1000
 	gosub .timestamp
-	while abs(mod((starttime-timestamp),resolution))>0.01
+	while val(left$(nexttime,5))!=val(left$(timestamp,5))
 		gosub .timestamp
 		if (timestamp>=dawn) and (timestamp<dusk) then turnlightson=1 else turnlightson=0
 		if turnlightson-lights==1 then print(date$(),time$(),"DAWN: LIGHTS ON")
@@ -99,6 +99,7 @@ while i<1000
 	ExportTiff(#0,file1$,1,1,0)
 	print(date$(),time$(),,,,"IMAGE ";i;" SAVED")
 	if lights==1 then print(date$(),time$(),,"LIGHTS ON AFTER IMAGING")
+	if nexttime+resolution<24 then nexttime=nexttime+resolution else nexttime=nexttime+resolution-24
 wend		
 
 
@@ -114,8 +115,8 @@ wend
 		dusk=25
 	endif
 	if (dawn!=0) and (dawn!=25) then input("What hour is dusk? (e.g 20 for 8:00 PM)",dusk)
+	if dawn!=25 then input("How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)",bits)
 	input("How many hours do you want between starting to acquire images?",resolution)
-	input("How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)",bits)
 	input("How many minutes would you like to let your seedlings chill out in the dark?",autodecay)
 	input("For how many minutes do your plants like to be exposed?",exposure)
 	input("What time do you want to start imaging? (Format as 08:30 or 20:30; leave blank for ASAP.)", start$)
