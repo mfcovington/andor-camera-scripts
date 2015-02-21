@@ -1,11 +1,11 @@
 //Changes in version BlueRedv1 (2015-01-22) slh
 // - adding blue light control (channel 7) to the existing red light control
 //Changes in version 4a (072805):
-//	-removed option to take RL images because all you really get to see is the reflections of the LEDs
+//  -removed option to take RL images because all you really get to see is the reflections of the LEDs
 //Changes in version 4:
-//	-made a counter for the number of dusks so that we can have, for example, 3 cycles of L/D followed by LL or DD
-//	-removed some redundancy
-//	-added a RL image and an autofluorescence image at the beginning of the experiment and the option to take one or both at the beginning of each image acquired while growing in the light
+//  -made a counter for the number of dusks so that we can have, for example, 3 cycles of L/D followed by LL or DD
+//  -removed some redundancy
+//  -added a RL image and an autofluorescence image at the beginning of the experiment and the option to take one or both at the beginning of each image acquired while growing in the light
 SetTemperature(-75)
 cooler(1)
 SetShutter(2,1)
@@ -38,25 +38,25 @@ print(comments$)
 print("")
 gosub .timestamp
 if timestamp<starttime then
-	print("Started program at ";left$(time$(),5))
-	print("Started imaging at ";start$)
+    print("Started program at ";left$(time$(),5))
+    print("Started imaging at ";start$)
 else
-	print("Started at ";left$(time$(),5))
+    print("Started at ";left$(time$(),5))
 endif
 
 if (asc(default$)!=121) and (asc(default$)!=89) then
-	if (dawn==0) and (dusk==25) then
-		print("Imaged in LL")
-	else
-		if (dawn==25) and (dusk==25) then print("Imaged in DD") else print("DAWN=";dawn,,"DUSK=";dusk)
-	endif
-	if toLL==1 then print("Transferred to LL after ";freerunwhen;" L/D cycles")
-	if toDD==1 then print("Transferred to DD after ";freerunwhen;" L/D cycles")
-	if (dawn==25) and (dusk==25) then print(resolution;" hour resolution") else print(resolution;" hour resolution in ";Rbits;" bits RL, " ;Bbits;" bits BL")
-	print("Autodecay for ";autodecay;" minutes prior to ";exposure;"-min exposures")
-	if autofluor==1 then print("While growing in light, a 2-minute autofluorescence exposure was taken prior to each image")
+    if (dawn==0) and (dusk==25) then
+        print("Imaged in LL")
+    else
+        if (dawn==25) and (dusk==25) then print("Imaged in DD") else print("DAWN=";dawn,,"DUSK=";dusk)
+    endif
+    if toLL==1 then print("Transferred to LL after ";freerunwhen;" L/D cycles")
+    if toDD==1 then print("Transferred to DD after ";freerunwhen;" L/D cycles")
+    if (dawn==25) and (dusk==25) then print(resolution;" hour resolution") else print(resolution;" hour resolution in ";Rbits;" bits RL, " ;Bbits;" bits BL")
+    print("Autodecay for ";autodecay;" minutes prior to ";exposure;"-min exposures")
+    if autofluor==1 then print("While growing in light, a 2-minute autofluorescence exposure was taken prior to each image")
 else
-	print("Generic experiment: 20-min exposures; 2-hr resolution; 128 bits cRL and cBL")
+    print("Generic experiment: 20-min exposures; 2-hr resolution; 128 bits cRL and cBL")
 endif
 
 print("autoDULL BlueRed (2015-01-22)")
@@ -64,139 +64,139 @@ print("autoDULL BlueRed (2015-01-22)")
 gosub .timestamp
 if (timestamp>=dawn) and (timestamp<=dusk) then lights=1 else lights=0
 if lights==1 then
-	if starttime>timestamp then
-		i=-1
-		gosub .autofluor
-	endif
-	print(date$(),time$(),"BEGINNING OF EXPERIMENT: LIGHTS ON")
-	I2CBurstWrite(41,6,Rbits)
-	I2CBurstWrite(41,7,Bbits)
+    if starttime>timestamp then
+        i=-1
+        gosub .autofluor
+    endif
+    print(date$(),time$(),"BEGINNING OF EXPERIMENT: LIGHTS ON")
+    I2CBurstWrite(41,6,Rbits)
+    I2CBurstWrite(41,7,Bbits)
 else
-	print(date$(),time$(),"BEGINNING OF EXPERIMENT: LIGHTS OFF")
-	I2CBurstWrite(41,6,0)
-	I2CBurstWrite(41,7,0)
+    print(date$(),time$(),"BEGINNING OF EXPERIMENT: LIGHTS OFF")
+    I2CBurstWrite(41,6,0)
+    I2CBurstWrite(41,7,0)
 endif
 
 while starttime>timestamp
-	gosub .timestamp
-	gosub .dawndusk
-	gosub .startfreerun
+    gosub .timestamp
+    gosub .dawndusk
+    gosub .startfreerun
 wend
 nexttime=starttime
 
 i=0
 while i<1000
-	gosub .timestamp
-	while val(left$(nexttime,5))!=val(left$(timestamp,5))
-		gosub .timestamp
-		gosub .dawndusk
-		gosub .startfreerun
-	wend
-	lessdelay=0
-	if lights==1 then
-		I2CBurstWrite(41,6,0)
-		I2CBurstWrite(41,7,0)
-		print(date$(),time$(),,"LIGHTS OFF FOR IMAGING")
-		if autofluor==1 then gosub .autofluor
-	endif
-	j=0								
-	while j<60
-		if mod(j,12)==0 then beep()
-		delay(1000*autodecay-lessdelay)
-		j=j+1
-	wend
-	print(date$(),time$(),,,"IMAGE ";i+1;" STARTED")
-	SetSingleScan(exposure*60)
-	run()							   
-	delay (100)
-	i=i+1							   
-	i$=str$(i)
-	file1$=	"c:\Andor\current\DULL-"+ expt$ +"_" + i$ +".tif" 
-	ExportTiff(#0,file1$,1,1,0)
-	print(date$(),time$(),,,,"IMAGE ";i;" SAVED")
-	if lights==1 then print(date$(),time$(),,"LIGHTS ON AFTER IMAGING")
-	if nexttime+resolution<24 then nexttime=nexttime+resolution else nexttime=nexttime+resolution-24
-wend		
+    gosub .timestamp
+    while val(left$(nexttime,5))!=val(left$(timestamp,5))
+        gosub .timestamp
+        gosub .dawndusk
+        gosub .startfreerun
+    wend
+    lessdelay=0
+    if lights==1 then
+        I2CBurstWrite(41,6,0)
+        I2CBurstWrite(41,7,0)
+        print(date$(),time$(),,"LIGHTS OFF FOR IMAGING")
+        if autofluor==1 then gosub .autofluor
+    endif
+    j=0
+    while j<60
+        if mod(j,12)==0 then beep()
+        delay(1000*autodecay-lessdelay)
+        j=j+1
+    wend
+    print(date$(),time$(),,,"IMAGE ";i+1;" STARTED")
+    SetSingleScan(exposure*60)
+    run()
+    delay (100)
+    i=i+1
+    i$=str$(i)
+    file1$= "c:\Andor\current\DULL-"+ expt$ +"_" + i$ +".tif"
+    ExportTiff(#0,file1$,1,1,0)
+    print(date$(),time$(),,,,"IMAGE ";i;" SAVED")
+    if lights==1 then print(date$(),time$(),,"LIGHTS ON AFTER IMAGING")
+    if nexttime+resolution<24 then nexttime=nexttime+resolution else nexttime=nexttime+resolution-24
+wend
 
 
 .setparameters
-	input("If imaging in L/D cycles, what hour is dawn? (e.g. 8 is 8:00 AM; LL or DD for constant conditions)",dawn$)
-	dawn=val(dawn$)
-	if (asc(dawn$)==76) or (asc(dawn$)==108) then
-		dawn=0
-		dusk=25
-	endif
-	if (asc(dawn$)==68) or (asc(dawn$)==100) then
-		dawn=25
-		dusk=25
-	endif
-	if (dawn!=0) and (dawn!=25) then
-		input("What hour is dusk? (e.g 20 for 8:00 PM)",dusk)
-		input("Type LL or DD if you wish to switch to constant conditions during the experiment",freerun$)
-	endif
-	if (asc(freerun$)==76) or (asc(freerun$)==108) then toLL=1
-	if (asc(freerun$)==68) or (asc(freerun$)==100) then toDD=1
-	if (toLL+toDD)==1 then input("Entrain for how many days in L/D prior to freerunning? (e.g., for LD-LD-LL, type 2)",freerunwhen)
-	if dawn!=25 then input("How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)",Rbits)
-	if dawn!=25 then input("How many bits of blue light do you want to expose the plants to? (e.g. 128 for a normal experiment)",Bbits)
-	input("How many hours do you want between starting to acquire images?",resolution)
-	input("How many minutes would you like to let your seedlings chill out in the dark?",autodecay)
-	input("For how many minutes do your plants like to be exposed?",exposure)
-	input("Take a 2-min autofluorescence exposure before each image acquired while growing in the light?",autofluor$)
-	if (asc(autofluor$)==121) or (asc(autofluor$)==89) then autofluor=1
-	input("What time do you want to start imaging? (Format as 08:30 or 20:30; leave blank for ASAP.)", start$)
+    input("If imaging in L/D cycles, what hour is dawn? (e.g. 8 is 8:00 AM; LL or DD for constant conditions)",dawn$)
+    dawn=val(dawn$)
+    if (asc(dawn$)==76) or (asc(dawn$)==108) then
+        dawn=0
+        dusk=25
+    endif
+    if (asc(dawn$)==68) or (asc(dawn$)==100) then
+        dawn=25
+        dusk=25
+    endif
+    if (dawn!=0) and (dawn!=25) then
+        input("What hour is dusk? (e.g 20 for 8:00 PM)",dusk)
+        input("Type LL or DD if you wish to switch to constant conditions during the experiment",freerun$)
+    endif
+    if (asc(freerun$)==76) or (asc(freerun$)==108) then toLL=1
+    if (asc(freerun$)==68) or (asc(freerun$)==100) then toDD=1
+    if (toLL+toDD)==1 then input("Entrain for how many days in L/D prior to freerunning? (e.g., for LD-LD-LL, type 2)",freerunwhen)
+    if dawn!=25 then input("How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)",Rbits)
+    if dawn!=25 then input("How many bits of blue light do you want to expose the plants to? (e.g. 128 for a normal experiment)",Bbits)
+    input("How many hours do you want between starting to acquire images?",resolution)
+    input("How many minutes would you like to let your seedlings chill out in the dark?",autodecay)
+    input("For how many minutes do your plants like to be exposed?",exposure)
+    input("Take a 2-min autofluorescence exposure before each image acquired while growing in the light?",autofluor$)
+    if (asc(autofluor$)==121) or (asc(autofluor$)==89) then autofluor=1
+    input("What time do you want to start imaging? (Format as 08:30 or 20:30; leave blank for ASAP.)", start$)
 return
 
 .timestamp
-	hourstamp=val(left$(time$(),2))
-	minstamp=((val(mid$(time$(),4,2)))/60)
-	timestamp=(hourstamp+minstamp)
+    hourstamp=val(left$(time$(),2))
+    minstamp=((val(mid$(time$(),4,2)))/60)
+    timestamp=(hourstamp+minstamp)
 return
 
 .autofluor
-	noti=i+1							   
-	noti$=str$(noti)
-	I2CBurstWrite(41,6,0)	
-	I2CBurstWrite(41,7,0)							
-	print(date$(),time$(),,,,,"2-MIN AUTOFLUORESCENCE IMAGE ";noti;" STARTED")
-	SetSingleScan(120)
-	run()							   
-	delay (100)
-	file1$=	"c:\Andor\current\DULL-"+ expt$ +"_AUTOFLUOR_" + noti$ +".tif" 
-	ExportTiff(#0,file1$,1,1,0)
-	print(date$(),time$(),,,,,,"2-MIN AUTOFLUORESCENCE IMAGE ";noti;" SAVED")
-	lessdelay=lessdelay+2733
-	//2600
+    noti=i+1
+    noti$=str$(noti)
+    I2CBurstWrite(41,6,0)
+    I2CBurstWrite(41,7,0)
+    print(date$(),time$(),,,,,"2-MIN AUTOFLUORESCENCE IMAGE ";noti;" STARTED")
+    SetSingleScan(120)
+    run()
+    delay (100)
+    file1$= "c:\Andor\current\DULL-"+ expt$ +"_AUTOFLUOR_" + noti$ +".tif"
+    ExportTiff(#0,file1$,1,1,0)
+    print(date$(),time$(),,,,,,"2-MIN AUTOFLUORESCENCE IMAGE ";noti;" SAVED")
+    lessdelay=lessdelay+2733
+    //2600
 return
 
 .dawndusk
-	if (timestamp>=dawn) and (timestamp<dusk) then turnlightson=1 else turnlightson=0
-	if turnlightson-lights==1 then
-		print(date$(),time$(),"DAWN: LIGHTS ON")
-		dawncounter=dawncounter+1
-	endif
-	if turnlightson-lights==-1 then
-		print(date$(),time$(),"DUSK: LIGHTS OFF")
-		duskcounter=duskcounter+1
-	endif
-	if turnlightson==1 then lights=1
-	if turnlightson==0 then lights=0
-	if lights==1 then I2CBurstWrite(41,6,Rbits)
-	if lights==1 then I2CBurstWrite(41,7,Bbits)
+    if (timestamp>=dawn) and (timestamp<dusk) then turnlightson=1 else turnlightson=0
+    if turnlightson-lights==1 then
+        print(date$(),time$(),"DAWN: LIGHTS ON")
+        dawncounter=dawncounter+1
+    endif
+    if turnlightson-lights==-1 then
+        print(date$(),time$(),"DUSK: LIGHTS OFF")
+        duskcounter=duskcounter+1
+    endif
+    if turnlightson==1 then lights=1
+    if turnlightson==0 then lights=0
+    if lights==1 then I2CBurstWrite(41,6,Rbits)
+    if lights==1 then I2CBurstWrite(41,7,Bbits)
 return
 
 .startfreerun
-	if (duskcounter>=freerunwhen) and (toDD==1) and (freerunning!=1) then
-		freerunning=1
-		dawn=25
-		dusk=25
-		print(date$(),time$(),"TRANSFERRED TO DD")
-	endif
-	if (dawncounter>=freerunwhen) and (toLL==1) and (freerunning!=1) then
-		freerunning=1
-		dawn=0
-		dusk=25
-		print(date$(),time$(),"TRANSFERRED TO LL")
-	endif
+    if (duskcounter>=freerunwhen) and (toDD==1) and (freerunning!=1) then
+        freerunning=1
+        dawn=25
+        dusk=25
+        print(date$(),time$(),"TRANSFERRED TO DD")
+    endif
+    if (dawncounter>=freerunwhen) and (toLL==1) and (freerunning!=1) then
+        freerunning=1
+        dawn=0
+        dusk=25
+        print(date$(),time$(),"TRANSFERRED TO LL")
+    endif
 return
 
