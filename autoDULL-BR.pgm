@@ -27,12 +27,12 @@ input( "What number is this experiment?", expt$ )
 input( "Is this a generic experiment? (20-min exposures; 2-hr resolution; 128 bits cRL and 128 cBL; starting ASAP)", default$ )
 input( "Comments about experiment:", comments$ )
 
-if ( asc(default$) != 121 ) and ( asc(default$) != 89 ) then gosub .setparameters
+if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then gosub .setparameters
 SetSingleScan( exposure * 60 )
 gosub .timestamp
 
-if asc(start$) == 0   then start$ = "now"
-if asc(start$) == 110 then start$ = left$( time$(), 5 )
+if asc(start$) == 0 /*null*/ then start$ = "now"
+if asc(start$) == 110 /*n*/ then start$ = left$( time$(), 5 )
 starthr   = val( left$( start$, 2 ) )
 startmin  = ( val( right$( start$, 2 ) ) / 60)
 starttime = ( starthr + startmin )
@@ -52,7 +52,7 @@ else
     print("Started at "; left$( time$(), 5 ) )
 endif
 
-if ( asc(default$) != 121 ) and ( asc(default$) != 89 ) then
+if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then
     if ( dawn == 0 ) and ( dusk == 25 ) then
         print("Imaged in LL")
     else
@@ -144,12 +144,12 @@ wend
     input( "If imaging in L/D cycles, what hour is dawn? (e.g. 8 is 8:00 AM; LL or DD for constant conditions)", dawn$ )
     dawn = val(dawn$)
 
-    if ( asc(dawn$) == 76) or ( asc(dawn$) == 108 ) then
+    if ( asc(dawn$) == 76 /*L*/ ) or ( asc(dawn$) == 108 /*l*/ ) then
         dawn = 0
         dusk = 25
     endif
 
-    if ( asc(dawn$) == 68 ) or ( asc(dawn$) == 100 ) then
+    if ( asc(dawn$) == 68 /*D*/ ) or ( asc(dawn$) == 100 /*d*/ ) then
         dawn = 25
         dusk = 25
     endif
@@ -159,8 +159,8 @@ wend
         input( "Type LL or DD if you wish to switch to constant conditions during the experiment", freerun$ )
     endif
 
-    if ( asc(freerun$) == 76 ) or ( asc(freerun$) == 108 ) then toLL = 1
-    if ( asc(freerun$) == 68 ) or ( asc(freerun$) == 100 ) then toDD = 1
+    if ( asc(freerun$) == 76 /*L*/ ) or ( asc(freerun$) == 108 /*l*/ ) then toLL = 1
+    if ( asc(freerun$) == 68 /*D*/ ) or ( asc(freerun$) == 100 /*d*/ ) then toDD = 1
 
     if ( toLL + toDD ) == 1 then input( "Entrain for how many days in L/D prior to freerunning? (e.g., for LD-LD-LL, type 2)", freerunwhen )
 
@@ -172,7 +172,7 @@ wend
     input( "For how many minutes do your plants like to be exposed?", exposure )
     input( "Take a 2-min autofluorescence exposure before each image acquired while growing in the light?", autofluor$ )
 
-    if ( asc(autofluor$) == 121 ) or ( asc(autofluor$) == 89 ) then autofluor = 1
+    if ( asc(autofluor$) == 121 /*Y*/ ) or ( asc(autofluor$) == 89 /*y*/ ) then autofluor = 1
 
     input( "What time do you want to start imaging? (Format as 08:30 or 20:30; leave blank for ASAP.)", start$ )
 return
