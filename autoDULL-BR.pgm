@@ -93,12 +93,6 @@ print("autoDULL BlueRed (2015-01-22)")
 gosub .timestamp
 if timestamp >= dawn and timestamp <= dusk then
     lights = 1
-
-    if starttime > timestamp then
-        i = -1
-        gosub .autofluor
-    endif
-
     print( date$(), time$(), "BEGINNING OF EXPERIMENT: LIGHTS ON" )
     I2CBurstWrite( 41, 6, Rbits )
     I2CBurstWrite( 41, 7, Bbits )
@@ -107,6 +101,11 @@ else
     print( date$(), time$(), "BEGINNING OF EXPERIMENT: LIGHTS OFF" )
     I2CBurstWrite( 41, 6, 0 )
     I2CBurstWrite( 41, 7, 0 )
+endif
+
+if starttime > timestamp then
+    i = -1
+    gosub .autofluor
 endif
 
 while starttime > timestamp
