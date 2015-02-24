@@ -93,11 +93,7 @@ print("autoDULL BlueRed (2015-01-22)")
 gosub .timestamp
 if timestamp >= dawn and timestamp <= dusk then
     lights = 1
-else
-    lights = 0
-endif
 
-if lights == 1 then
     if starttime > timestamp then
         i = -1
         gosub .autofluor
@@ -107,6 +103,7 @@ if lights == 1 then
     I2CBurstWrite( 41, 6, Rbits )
     I2CBurstWrite( 41, 7, Bbits )
 else
+    lights = 0
     print( date$(), time$(), "BEGINNING OF EXPERIMENT: LIGHTS OFF" )
     I2CBurstWrite( 41, 6, 0 )
     I2CBurstWrite( 41, 7, 0 )
@@ -207,9 +204,6 @@ wend
 
     if dawn != 25 then
         input( "How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Rbits )
-    endif
-
-    if dawn != 25 then
         input( "How many bits of blue light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Bbits )
     endif
 
@@ -254,49 +248,41 @@ return
 .dawndusk
     if timestamp >= dawn and timestamp < dusk then
         turnlightson = 1
+
+        if turnlightson - lights == 1 then
+            print( date$(), time$(), "DAWN: LIGHTS ON" )
+            dawncounter = dawncounter + 1
+        endif
+
+        lights = 1
+        I2CBurstWrite( 41, 6, Rbits )
+        I2CBurstWrite( 41, 7, Bbits )
     else
         turnlightson = 0
-    endif
 
-    if turnlightson - lights == 1 then
-        print( date$(), time$(), "DAWN: LIGHTS ON" )
-        dawncounter = dawncounter + 1
-    endif
+        if turnlightson - lights == -1 then
+            print( date$(), time$(), "DUSK: LIGHTS OFF" )
+            duskcounter = duskcounter + 1
+        endif
 
-    if turnlightson - lights == -1 then
-        print( date$(), time$(), "DUSK: LIGHTS OFF" )
-        duskcounter = duskcounter + 1
-    endif
-
-    if turnlightson == 1 then
-        lights = 1
-    endif
-
-    if turnlightson == 0 then
         lights = 0
-    endif
-
-    if lights == 1 then
-        I2CBurstWrite( 41, 6, Rbits )
-    endif
-
-    if lights == 1 then
-        I2CBurstWrite( 41, 7, Bbits )
     endif
 return
 
 .startfreerun
-    if duskcounter >= freerunwhen and toDD == 1 and freerunning != 1 then
+    if duskcounter >= freerunwhen and freerunning != 1 then
         freerunning = 1
-        dawn = 25
-        dusk = 25
-        print( date$(), time$(), "TRANSFERRED TO DD" )
-    endif
 
-    if dawncounter >= freerunwhen and toLL == 1 and freerunning != 1 then
-        freerunning = 1
-        dawn = 0
+        if toDD == 1 then
+            print( date$(), time$(), "TRANSFERRED TO DD" )
+            dawn = 25
+        endif
+
+        if toLL == 1 then
+            print( date$(), time$(), "TRANSFERRED TO LL" )
+            dawn = 0
+        endif
+
         dusk = 25
-        print( date$(), time$(), "TRANSFERRED TO LL" )
     endif
 return
