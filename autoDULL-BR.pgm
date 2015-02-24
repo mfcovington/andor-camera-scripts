@@ -31,8 +31,10 @@ if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then gosub .
 SetSingleScan( exposure * 60 )
 gosub .timestamp
 
-if asc(start$) == 0 /*null*/ then start$ = "now"
-if asc(start$) == 110 /*n*/ then start$ = left$( time$(), 5 )
+if asc(start$) == 0 /*null*/ then
+    start$ = left$( time$(), 5 )
+endif
+
 starthr   = val( left$( start$, 2 ) )
 startmin  = ( val( right$( start$, 2 ) ) / 60)
 starttime = ( starthr + startmin )
