@@ -6,6 +6,8 @@
 //   - made a counter for the number of dusks so that we can have, for example, 3 cycles of L/D followed by LL or DD
 //   - removed some redundancy
 //   - added a RL image and an autofluorescence image at the beginning of the experiment and the option to take one or both at the beginning of each image acquired while growing in the light
+program_name$ = "autoDULL BlueRed (2015-01-22)"
+
 SetTemperature(-75)
 cooler(1)
 SetShutter(2, 1)
@@ -22,6 +24,8 @@ Bbits = 128
 resolution = 2
 exposure   = 20
 autodecay  = 10
+
+default_description$ = "Generic experiment: 20-min exposures; 2-hr resolution; 128 bits cRL and cBL"
 
 input( "What number is this experiment?", expt$ )
 input( "Is this a generic experiment? (20-min exposures; 2-hr resolution; 128 bits cRL and 128 cBL; starting ASAP)", default$ )
@@ -85,10 +89,10 @@ if asc(default$) != 121 /*y*/ and asc(default$) != 89 /*Y*/ then
         print("While growing in light, a 2-minute autofluorescence exposure was taken prior to each image")
     endif
 else
-    print("Generic experiment: 20-min exposures; 2-hr resolution; 128 bits cRL and cBL")
+    print(default_description$)
 endif
 
-print("autoDULL BlueRed (2015-01-22)")
+print(program_name$)
 
 gosub .timestamp
 if timestamp >= dawn and timestamp <= dusk then
