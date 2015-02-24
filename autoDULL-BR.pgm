@@ -27,7 +27,9 @@ input( "What number is this experiment?", expt$ )
 input( "Is this a generic experiment? (20-min exposures; 2-hr resolution; 128 bits cRL and 128 cBL; starting ASAP)", default$ )
 input( "Comments about experiment:", comments$ )
 
-if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then gosub .setparameters
+if asc(default$) != 121 /*y*/ and asc(default$) != 89 /*Y*/ then
+    gosub .setparameters
+endif
 
 if asc(start$) == 0 /*null*/ then
     start$ = left$( time$(), 5 )
@@ -52,19 +54,36 @@ else
     print("Started at "; left$( time$(), 5 ) )
 endif
 
-if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then
-    if ( dawn == 0 ) and ( dusk == 25 ) then
+if asc(default$) != 121 /*y*/ and asc(default$) != 89 /*Y*/ then
+    if dawn == 0 and dusk == 25 then
         print("Imaged in LL")
     else
-        if ( dawn == 25 ) and ( dusk == 25 ) then print("Imaged in DD") else print( "DAWN="; dawn, , "DUSK="; dusk )
+        if dawn == 25 and dusk == 25 then
+            print("Imaged in DD")
+        else
+            print( "DAWN="; dawn, , "DUSK="; dusk )
+        endif
     endif
 
-    if toLL == 1 then print( "Transferred to LL after "; freerunwhen; " L/D cycles" )
-    if toDD == 1 then print( "Transferred to DD after "; freerunwhen; " L/D cycles" )
+    if toLL == 1 then
+        print( "Transferred to LL after "; freerunwhen; " L/D cycles" )
+    endif
 
-    if ( dawn == 25 ) and ( dusk == 25 ) then print( resolution; " hour resolution" ) else print( resolution; " hour resolution in "; Rbits; " bits RL, "; Bbits; " bits BL" )
+    if toDD == 1 then
+        print( "Transferred to DD after "; freerunwhen; " L/D cycles" )
+    endif
+
+    if dawn == 25 and dusk == 25 then
+        print( resolution; " hour resolution" )
+    else
+        print( resolution; " hour resolution in "; Rbits; " bits RL, "; Bbits; " bits BL" )
+    endif
+
     print( "Autodecay for "; autodecay; " minutes prior to "; exposure; "-min exposures" )
-    if autofluor == 1 then print("While growing in light, a 2-minute autofluorescence exposure was taken prior to each image")
+
+    if autofluor == 1 then
+        print("While growing in light, a 2-minute autofluorescence exposure was taken prior to each image")
+    endif
 else
     print("Generic experiment: 20-min exposures; 2-hr resolution; 128 bits cRL and cBL")
 endif
@@ -72,9 +91,13 @@ endif
 print("autoDULL BlueRed (2015-01-22)")
 
 gosub .timestamp
-if ( timestamp >= dawn ) and ( timestamp <= dusk ) then lights = 1 else lights = 0
-if lights == 1 then
+if timestamp >= dawn and timestamp <= dusk then
+    lights = 1
+else
+    lights = 0
+endif
 
+if lights == 1 then
     if starttime > timestamp then
         i = -1
         gosub .autofluor
@@ -113,13 +136,19 @@ while i < 1000
         I2CBurstWrite( 41, 6, 0 )
         I2CBurstWrite( 41, 7, 0 )
         print( date$(), time$(), , "LIGHTS OFF FOR IMAGING" )
-        if autofluor == 1 then gosub .autofluor
+
+        if autofluor == 1 then
+            gosub .autofluor
+        endif
     endif
 
     j = 0
 
     while j < 60
-        if mod( j, 12 ) == 0 then beep()
+        if mod( j, 12 ) == 0 then
+            beep()
+        endif
+
         delay( 1000 * autodecay - lessdelay )
         j = j + 1
     wend
@@ -135,8 +164,13 @@ while i < 1000
     ExportTiff( #0, file1$, 1, 1, 0 )
     print( date$(), time$(), , , , "IMAGE "; i; " SAVED" )
 
-    if lights == 1 then print( date$(), time$(), , "LIGHTS ON AFTER IMAGING" )
-    if nexttime + resolution < 24 then nexttime = nexttime + resolution else nexttime = nexttime + resolution - 24
+    if lights == 1 then
+        print( date$(), time$(), , "LIGHTS ON AFTER IMAGING" )
+    endif
+
+    if nexttime + resolution < 24 then
+        nexttime = nexttime + resolution else nexttime = nexttime + resolution - 24
+    endif
 wend
 
 
@@ -144,35 +178,49 @@ wend
     input( "If imaging in L/D cycles, what hour is dawn? (e.g. 8 is 8:00 AM; LL or DD for constant conditions)", dawn$ )
     dawn = val(dawn$)
 
-    if ( asc(dawn$) == 76 /*L*/ ) or ( asc(dawn$) == 108 /*l*/ ) then
+    if asc(dawn$) == 76 /*L*/ or asc(dawn$) == 108 /*l*/ then
         dawn = 0
         dusk = 25
     endif
 
-    if ( asc(dawn$) == 68 /*D*/ ) or ( asc(dawn$) == 100 /*d*/ ) then
+    if asc(dawn$) == 68 /*D*/ or asc(dawn$) == 100 /*d*/ then
         dawn = 25
         dusk = 25
     endif
 
-    if ( dawn != 0 ) and ( dawn != 25 ) then
+    if dawn != 0 and dawn != 25 then
         input( "What hour is dusk? (e.g 20 for 8:00 PM)", dusk )
         input( "Type LL or DD if you wish to switch to constant conditions during the experiment", freerun$ )
     endif
 
-    if ( asc(freerun$) == 76 /*L*/ ) or ( asc(freerun$) == 108 /*l*/ ) then toLL = 1
-    if ( asc(freerun$) == 68 /*D*/ ) or ( asc(freerun$) == 100 /*d*/ ) then toDD = 1
+    if asc(freerun$) == 76 /*L*/ or asc(freerun$) == 108 /*l*/ then
+        toLL = 1
+    endif
 
-    if ( toLL + toDD ) == 1 then input( "Entrain for how many days in L/D prior to freerunning? (e.g., for LD-LD-LL, type 2)", freerunwhen )
+    if asc(freerun$) == 68 /*D*/ or asc(freerun$) == 100 /*d*/ then
+        toDD = 1
+    endif
 
-    if dawn != 25 then input( "How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Rbits )
-    if dawn != 25 then input( "How many bits of blue light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Bbits )
+    if toLL + toDD == 1 then
+        input( "Entrain for how many days in L/D prior to freerunning? (e.g., for LD-LD-LL, type 2)", freerunwhen )
+    endif
+
+    if dawn != 25 then
+        input( "How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Rbits )
+    endif
+
+    if dawn != 25 then
+        input( "How many bits of blue light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Bbits )
+    endif
 
     input( "How many hours do you want between starting to acquire images?", resolution )
     input( "How many minutes would you like to let your seedlings chill out in the dark?", autodecay )
     input( "For how many minutes do your plants like to be exposed?", exposure )
     input( "Take a 2-min autofluorescence exposure before each image acquired while growing in the light?", autofluor$ )
 
-    if ( asc(autofluor$) == 121 /*Y*/ ) or ( asc(autofluor$) == 89 /*y*/ ) then autofluor = 1
+    if asc(autofluor$) == 121 /*Y*/ or asc(autofluor$) == 89 /*y*/ then
+        autofluor = 1
+    endif
 
     input( "What time do you want to start imaging? (Format as 08:30 or 20:30; leave blank for ASAP.)", start$ )
 return
@@ -204,7 +252,11 @@ return
 return
 
 .dawndusk
-    if ( timestamp >= dawn ) and ( timestamp < dusk ) then turnlightson = 1 else turnlightson = 0
+    if timestamp >= dawn and timestamp < dusk then
+        turnlightson = 1
+    else
+        turnlightson = 0
+    endif
 
     if turnlightson - lights == 1 then
         print( date$(), time$(), "DAWN: LIGHTS ON" )
@@ -216,22 +268,32 @@ return
         duskcounter = duskcounter + 1
     endif
 
-    if turnlightson == 1 then lights = 1
-    if turnlightson == 0 then lights = 0
+    if turnlightson == 1 then
+        lights = 1
+    endif
 
-    if lights == 1 then I2CBurstWrite( 41, 6, Rbits )
-    if lights == 1 then I2CBurstWrite( 41, 7, Bbits )
+    if turnlightson == 0 then
+        lights = 0
+    endif
+
+    if lights == 1 then
+        I2CBurstWrite( 41, 6, Rbits )
+    endif
+
+    if lights == 1 then
+        I2CBurstWrite( 41, 7, Bbits )
+    endif
 return
 
 .startfreerun
-    if ( duskcounter >= freerunwhen ) and ( toDD == 1 ) and ( freerunning != 1 ) then
+    if duskcounter >= freerunwhen and toDD == 1 and freerunning != 1 then
         freerunning = 1
         dawn = 25
         dusk = 25
         print( date$(), time$(), "TRANSFERRED TO DD" )
     endif
 
-    if ( dawncounter >= freerunwhen ) and ( toLL == 1 ) and ( freerunning != 1 ) then
+    if dawncounter >= freerunwhen and toLL == 1 and freerunning != 1 then
         freerunning = 1
         dawn = 0
         dusk = 25
