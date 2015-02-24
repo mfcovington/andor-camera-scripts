@@ -28,8 +28,6 @@ input( "Is this a generic experiment? (20-min exposures; 2-hr resolution; 128 bi
 input( "Comments about experiment:", comments$ )
 
 if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then gosub .setparameters
-SetSingleScan( exposure * 60 )
-gosub .timestamp
 
 if asc(start$) == 0 /*null*/ then
     start$ = left$( time$(), 5 )
