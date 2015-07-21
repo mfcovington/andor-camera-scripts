@@ -169,7 +169,9 @@ while i < 1000
     endif
 
     if nexttime + resolution < 24 then
-        nexttime = nexttime + resolution else nexttime = nexttime + resolution - 24
+        nexttime = nexttime + resolution
+    else
+    	nexttime = nexttime + resolution - 24
     endif
 wend
 
