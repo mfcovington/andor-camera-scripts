@@ -173,7 +173,7 @@ while ( i < maximages )
     if ( nexttime + resolution < 24 ) then
         nexttime = nexttime + resolution
     else
-    	nexttime = nexttime + resolution - 24
+        nexttime = nexttime + resolution - 24
     endif
 wend
 
@@ -257,7 +257,7 @@ return
 
         if ( turnlightson - lights == 1 ) then
             print( date$(), time$(), "DAWN: LIGHTS ON" )
-			gosub .turnlightson
+            gosub .turnlightson
             dawncounter = dawncounter + 1
         endif
 
