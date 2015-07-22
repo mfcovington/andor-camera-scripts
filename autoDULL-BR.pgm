@@ -285,13 +285,14 @@ return
         if ( toDD == 1 ) then
             print( date$(), time$(), "TRANSFERRED TO DD" )
             dawn = 25
+            dusk = 25
         endif
 
         if ( toLL == 1 ) then
             print( date$(), time$(), "TRANSFERRED TO LL" )
             dawn = 0
+            dusk = 25
         endif
 
-        dusk = 25
     endif
 return
