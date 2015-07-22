@@ -11,6 +11,8 @@ program_name$ = "autoDULL BlueRed (2015-01-22)"
 outputdir$ = "c:\Andor\current\" // " <- Commented quote because the \ messes up syntax highlighting
 outputprefix$ = "DULL-"
 
+maximages = 1000
+
 SetTemperature(-75)
 cooler(1)
 SetShutter(2, 1)
@@ -122,7 +124,7 @@ wend
 nexttime = starttime
 
 i = 0
-while ( i < 1000 )
+while ( i < maximages )
     gosub .timestamp
 
     while ( val( left$( nexttime, 5 ) ) != val( left$( timestamp, 5 ) ) )
