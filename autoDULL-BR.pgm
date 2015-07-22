@@ -243,7 +243,7 @@ return
     run()
     delay(100)
 
-    file1$ = "c:\Andor\current\DULL-" + expt$ + "_AUTOFLUOR_" + noti$ + ".tif"
+    file1$ = outputdir$ + outputprefix$ + expt$ + "_AUTOFLUOR_" + noti$ + ".tif"
     ExportTiff( #0, file1$, 1, 1, 0 )
     print( date$(), time$(), , , , , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " SAVED" )
 
