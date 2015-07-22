@@ -137,8 +137,8 @@ while ( i < 1000 )
         I2CBurstWrite( 41, 7, 0 )
         print( date$(), time$(), , "LIGHTS OFF FOR IMAGING" )
 
-            gosub .autofluor
         if ( autofluor == 1 ) then
+            gosub .autofluor
         endif
     endif
 
