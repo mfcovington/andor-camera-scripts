@@ -256,6 +256,8 @@ return
 
         if ( turnlightson - lights == 1 ) then
             print( date$(), time$(), "DAWN: LIGHTS ON" )
+			I2CBurstWrite( 41, 6, Rbits )
+			I2CBurstWrite( 41, 7, Bbits )
             dawncounter = dawncounter + 1
         endif
 
@@ -267,6 +269,8 @@ return
 
         if ( turnlightson - lights == -1 ) then
             print( date$(), time$(), "DUSK: LIGHTS OFF" )
+            I2CBurstWrite( 41, 6, 0 )
+    		I2CBurstWrite( 41, 7, 0 )
             duskcounter = duskcounter + 1
         endif
 
