@@ -8,6 +8,9 @@
 //   - added a RL image and an autofluorescence image at the beginning of the experiment and the option to take one or both at the beginning of each image acquired while growing in the light
 program_name$ = "autoDULL BlueRed (2015-01-22)"
 
+outputdir$ = "c:\Andor\current\" // " <- Commented quote because the \ messes up syntax highlighting
+outputprefix$ = "DULL-"
+
 SetTemperature(-75)
 cooler(1)
 SetShutter(2, 1)
@@ -45,7 +48,7 @@ starttime = ( starthr + startmin )
 
 print("")
 print(date$())
-print( "DULL-" + expt$ )
+print( outputprefix$ + expt$ )
 print(comments$)
 print("")
 
@@ -157,7 +160,7 @@ while ( i < 1000 )
 
     i = i + 1
     i$ = str$(i)
-    file1$ = "c:\Andor\current\DULL-" + expt$ + "_" + i$ + ".tif"
+    file1$ = outputdir$ + outputprefix$ + expt$ + "_" + i$ + ".tif"
     ExportTiff( #0, file1$, 1, 1, 0 )
     print( date$(), time$(), , , , "IMAGE "; i; " SAVED" )
 
