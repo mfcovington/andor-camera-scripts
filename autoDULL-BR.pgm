@@ -257,7 +257,6 @@ return
         endif
 
         lights = 1
-        gosub .turnlightson
     else
         turnlightson = 0
 
