@@ -98,13 +98,11 @@ gosub .timestamp
 if ( timestamp >= dawn ) and ( timestamp <= dusk ) then
     lights = 1
     print( date$(), time$(), "BEGINNING OF EXPERIMENT: LIGHTS ON" )
-    I2CBurstWrite( 41, 6, Rbits )
-    I2CBurstWrite( 41, 7, Bbits )
+    gosub .turnlightson
 else
     lights = 0
     print( date$(), time$(), "BEGINNING OF EXPERIMENT: LIGHTS OFF" )
-    I2CBurstWrite( 41, 6, 0 )
-    I2CBurstWrite( 41, 7, 0 )
+    gosub .turnlightsoff
 endif
 
 if ( starttime > timestamp ) then
@@ -133,8 +131,7 @@ while ( i < 1000 )
     lessdelay = 0
 
     if ( lights == 1 ) then
-        I2CBurstWrite( 41, 6, 0 )
-        I2CBurstWrite( 41, 7, 0 )
+        gosub .turnlightsoff
         print( date$(), time$(), , "LIGHTS OFF FOR IMAGING" )
 
         if ( autofluor == 1 ) then
@@ -234,8 +231,7 @@ return
     noti = i + 1
     noti$ = str$(noti)
 
-    I2CBurstWrite( 41, 6, 0 )
-    I2CBurstWrite( 41, 7, 0 )
+    gosub .turnlightsoff
 
     print( date$(), time$(), , , , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " STARTED" )
     SetSingleScan(120)
@@ -256,21 +252,18 @@ return
 
         if ( turnlightson - lights == 1 ) then
             print( date$(), time$(), "DAWN: LIGHTS ON" )
-			I2CBurstWrite( 41, 6, Rbits )
-			I2CBurstWrite( 41, 7, Bbits )
+			gosub .turnlightson
             dawncounter = dawncounter + 1
         endif
 
         lights = 1
-        I2CBurstWrite( 41, 6, Rbits )
-        I2CBurstWrite( 41, 7, Bbits )
+        gosub .turnlightson
     else
         turnlightson = 0
 
         if ( turnlightson - lights == -1 ) then
             print( date$(), time$(), "DUSK: LIGHTS OFF" )
-            I2CBurstWrite( 41, 6, 0 )
-    		I2CBurstWrite( 41, 7, 0 )
+            gosub .turnlightsoff
             duskcounter = duskcounter + 1
         endif
 
@@ -295,4 +288,14 @@ return
         endif
 
     endif
+return
+
+.turnlightson
+    I2CBurstWrite( 41, 6, Rbits )
+    I2CBurstWrite( 41, 7, Bbits )
+return
+
+.turnlightsoff
+    I2CBurstWrite( 41, 6, 0 )
+    I2CBurstWrite( 41, 7, 0 )
 return
