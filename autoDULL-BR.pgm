@@ -144,16 +144,7 @@ while ( i < maximages )
         endif
     endif
 
-    j = 0
-
-    while ( j < 60 )
-        if ( mod( j, 12 ) == 0 ) then
-            beep()
-        endif
-
-        delay( 1000 * autodecay - lessdelay )
-        j = j + 1
-    wend
+    gosub .autodecay
 
     print( date$(), time$(), , , "IMAGE "; i + 1; " STARTED" )
     SetSingleScan( exposure * 60 )
@@ -230,6 +221,19 @@ return
     hourstamp = val( left$( time$(), 2 ) )
     minstamp  = ( ( val( mid$( time$(), 4, 2 ) ) ) / 60 )
     timestamp = ( hourstamp + minstamp )
+return
+
+.autodecay
+    j = 0
+
+    while ( j < 60 )
+        if ( mod( j, 12 ) == 0 ) then
+            beep()
+        endif
+
+        delay( 1000 * autodecay - lessdelay )
+        j = j + 1
+    wend
 return
 
 .autofluor
