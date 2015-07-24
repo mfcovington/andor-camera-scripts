@@ -116,6 +116,9 @@ if ( starttime > timestamp ) then
     endif
     i = -1
     gosub .autofluor
+    if ( lights == 1 ) then
+        gosub .turnlightson
+    endif
 endif
 
 while ( starttime > timestamp )
