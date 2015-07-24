@@ -102,11 +102,11 @@ print(program_name$)
 gosub .timestamp
 if ( timestamp >= dawn ) and ( timestamp <= dusk ) then
     lights = 1
-    print( date$(), time$(), "BEGINNING OF EXPERIMENT: LIGHTS ON" )
+    print( date$(), time$(), "BEGINNING EXPERIMENT" )
     gosub .turnlightson
 else
     lights = 0
-    print( date$(), time$(), "BEGINNING OF EXPERIMENT: LIGHTS OFF" )
+    print( date$(), time$(), "BEGINNING EXPERIMENT" )
     gosub .turnlightsoff
 endif
 
