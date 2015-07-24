@@ -111,6 +111,9 @@ else
 endif
 
 if ( starttime > timestamp ) then
+    if ( lights == 1 ) then
+        gosub .turnlightsoff
+    endif
     i = -1
     gosub .autofluor
 endif
@@ -229,8 +232,6 @@ return
 .autofluor
     noti = i + 1
     noti$ = str$(noti)
-
-    gosub .turnlightsoff
 
     print( date$(), time$(), , , , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " STARTED" )
     SetSingleScan(120)
