@@ -281,12 +281,14 @@ return
 
         if ( toDD == 1 ) then
             print( date$(), time$(), "TRANSFERRED TO DD" )
+            gosub .turnlightsoff
             dawn = 25
             dusk = 25
         endif
 
         if ( toLL == 1 ) then
             print( date$(), time$(), "TRANSFERRED TO LL" )
+            gosub .turnlightson
             dawn = 0
             dusk = 25
         endif
