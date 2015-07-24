@@ -110,7 +110,8 @@ else
     gosub .turnlightsoff
 endif
 
-if ( starttime > timestamp ) then
+// Take an initial autofluorescence image if not starting LUC imaging within an hour
+if ( starttime > timestamp + 1 ) then
     if ( lights == 1 ) then
         // If lights on, give plants a minute-long exposure to light before initial autofluor image
         delay(60 * 1000)
