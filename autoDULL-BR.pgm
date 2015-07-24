@@ -112,6 +112,8 @@ endif
 
 if ( starttime > timestamp ) then
     if ( lights == 1 ) then
+        // If lights on, give plants a minute-long exposure to light before initial autofluor image
+        delay(60 * 1000)
         gosub .turnlightsoff
     endif
     i = -1
