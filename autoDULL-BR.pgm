@@ -256,7 +256,7 @@ return
         turnlightson = 1
 
         if ( turnlightson - lights == 1 ) then
-            print( date$(), time$(), "DAWN: LIGHTS ON" )
+            print( date$(), time$(), "DAWN" )
             gosub .turnlightson
             dawncounter = dawncounter + 1
         endif
@@ -266,7 +266,7 @@ return
         turnlightson = 0
 
         if ( turnlightson - lights == -1 ) then
-            print( date$(), time$(), "DUSK: LIGHTS OFF" )
+            print( date$(), time$(), "DUSK" )
             gosub .turnlightsoff
             duskcounter = duskcounter + 1
         endif
