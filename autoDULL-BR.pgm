@@ -145,17 +145,7 @@ while ( i < maximages )
     endif
 
     gosub .autodecay
-
-    print( date$(), time$(), , , "IMAGE "; i + 1; " STARTED" )
-    SetSingleScan( exposure * 60 )
-    run()
-    delay(100)
-
-    i = i + 1
-    i$ = str$(i)
-    file1$ = outputdir$ + outputprefix$ + expt$ + "_" + i$ + ".tif"
-    ExportTiff( #0, file1$, 1, 1, 0 )
-    print( date$(), time$(), , , , "IMAGE "; i; " SAVED" )
+    gosub .image
 
     if ( lights == 1 ) then
         print( date$(), time$(), , "LIGHTS ON AFTER IMAGING" )
@@ -277,6 +267,19 @@ return
 
         lights = 0
     endif
+return
+
+.image
+    print( date$(), time$(), , , "IMAGE "; i + 1; " STARTED" )
+    SetSingleScan( exposure * 60 )
+    run()
+    delay(100)
+
+    i = i + 1
+    i$ = str$(i)
+    file1$ = outputdir$ + outputprefix$ + expt$ + "_" + i$ + ".tif"
+    ExportTiff( #0, file1$, 1, 1, 0 )
+    print( date$(), time$(), , , , "IMAGE "; i; " SAVED" )
 return
 
 .startfreerun
