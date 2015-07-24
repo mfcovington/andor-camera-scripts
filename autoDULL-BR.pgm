@@ -151,9 +151,10 @@ while ( i < maximages )
         if ( autofluor == 1 ) then
             gosub .autofluor
         endif
+
+        gosub .autodecay
     endif
 
-    gosub .autodecay
     gosub .image
 
     if ( lights == 1 ) then
