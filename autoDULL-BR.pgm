@@ -297,11 +297,13 @@ return
 return
 
 .turnlightson
+    print( date$(), time$(), "TURNING LIGHTS ON")
     I2CBurstWrite( 41, 6, Rbits )
     I2CBurstWrite( 41, 7, Bbits )
 return
 
 .turnlightsoff
+    print( date$(), time$(), "TURNING LIGHTS OFF")
     I2CBurstWrite( 41, 6, 0 )
     I2CBurstWrite( 41, 7, 0 )
 return
