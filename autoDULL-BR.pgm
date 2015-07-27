@@ -159,6 +159,7 @@ while ( i < maximages )
 
     if ( lights == 1 ) then
         print( date$(), time$(), , "LIGHTS ON AFTER IMAGING" )
+        gosub .turnlightson
     endif
 
     if ( nexttime + resolution < 24 ) then
