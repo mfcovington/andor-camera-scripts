@@ -89,7 +89,11 @@ if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then
         print( resolution; " hour resolution in "; Rbits; " bits RL, "; Bbits; " bits BL" )
     endif
 
-    print( "Autodecay for "; autodecay; " minutes prior to "; exposure; "-min exposures" )
+    if ( autodecay > 0 ) then
+        print( "Autodecay for "; autodecay; " minutes prior to "; exposure; "-min exposures" )
+    else
+        print( exposure; "-min exposures" )
+    endif
 
     if ( autofluor == 1 ) then
         print("While growing in light, a 2-minute autofluorescence exposure was taken prior to each image")
