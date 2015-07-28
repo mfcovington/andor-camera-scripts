@@ -222,17 +222,10 @@ return
 return
 
 .autodecay
-    j = 0
-
-    while ( j < 60 )
-        if ( mod( j, 12 ) == 0 ) then
-            beep()
-        endif
-
-        delay( 1000 * autodecay - lessdelay )
-        j = j + 1
-    wend
+    delay( autodecay * 1000 * 60 - lessdelay )
 return
+
+
 
 .autofluor
     noti = i + 1
@@ -247,8 +240,8 @@ return
     ExportTiff( #0, file1$, 1, 1, 0 )
     print( date$(), time$(), , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " SAVED" )
 
-    lessdelay = lessdelay + 2733
-    //2600
+    // 2-minute autofluorescence image + processing/saving time == ~188 seconds
+    lessdelay = 188 * 1000
 return
 
 .dawndusk
