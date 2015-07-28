@@ -156,16 +156,7 @@ while ( imagecount < maximages )
         endif
     endif
 
-    autodecaytime = autodecay * 1000 * 60 - lessdelay
-    while ( autodecaytime > 0 )
-        if ( autodecaytime > 1000 ) then
-            delay(1000)
-        else
-            delay(autodecaytime)
-        endif
-        autodecaytime = autodecaytime - 1000
-    wend
-
+    gosub .autodecay
     gosub .image
 
     if ( lights == 1 ) then
@@ -232,6 +223,18 @@ return
     hourstamp = val( left$( time$(), 2 ) )
     minstamp  = ( ( val( mid$( time$(), 4, 2 ) ) ) / 60 )
     timestamp = ( hourstamp + minstamp )
+return
+
+.autodecay
+    autodecaytime = autodecay * 1000 * 60 - lessdelay
+    while ( autodecaytime > 0 )
+        if ( autodecaytime > 1000 ) then
+            delay(1000)
+        else
+            delay(autodecaytime)
+        endif
+        autodecaytime = autodecaytime - 1000
+    wend
 return
 
 .autofluor
