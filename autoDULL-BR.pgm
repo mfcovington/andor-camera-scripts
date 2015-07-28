@@ -23,17 +23,17 @@ SetReadoutTime(32)
 dawn = 0
 dusk = 25
 
-Rbits = 128
-Bbits = 128
+Rbits = 174
+Bbits = 171
 
 resolution = 2
 exposure   = 20
 autodecay  = 10
 
-default_description$ = "Generic experiment: 20-min exposures; 2-hr resolution; 128 bits cRL and cBL"
+default_description$ = "Generic experiment: 20-min exposures; 2-hr resolution; "; Rbits; " bits cRL and "; Bbits; " cBL"
 
 input( "What number is this experiment?", expt$ )
-input( "Is this a generic experiment? (20-min exposures; 2-hr resolution; 128 bits cRL and 128 cBL; starting ASAP)", default$ )
+input( "Is this a generic experiment? (20-min exposures; 2-hr resolution; "; Rbits; " bits cRL and "; Bbits; " cBL; starting ASAP)", default$ )
 input( "Comments about experiment:", comments$ )
 
 if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then
@@ -203,8 +203,8 @@ wend
     endif
 
     if ( dawn != 25 ) then
-        input( "How many bits of red light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Rbits )
-        input( "How many bits of blue light do you want to expose the plants to? (e.g. 128 for a normal experiment)", Bbits )
+        input( "How many bits of red light do you want to expose the plants to? (e.g. "; Rbits; " for a normal experiment)", Rbits )
+        input( "How many bits of blue light do you want to expose the plants to? (e.g. "; Bbits; " for a normal experiment)", Bbits )
     endif
 
     input( "How many hours do you want between starting to acquire images?", resolution )
