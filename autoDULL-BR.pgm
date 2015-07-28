@@ -156,7 +156,16 @@ while ( imagecount < maximages )
         endif
     endif
 
-    delay( autodecay * 1000 * 60 - lessdelay )
+    autodecaytime = autodecay * 1000 * 60 - lessdelay
+    while ( autodecaytime > 0 )
+        if ( autodecaytime > 1000 ) then
+            delay(1000)
+        else
+            delay(autodecaytime)
+        endif
+        autodecaytime = autodecaytime - 1000
+    wend
+
     gosub .image
 
     if ( lights == 1 ) then
