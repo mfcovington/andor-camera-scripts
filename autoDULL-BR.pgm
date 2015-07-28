@@ -149,10 +149,9 @@ while ( i < maximages )
         if ( autofluor == 1 ) then
             gosub .autofluor
         endif
-
-        delay( autodecay * 1000 * 60 - lessdelay )
     endif
 
+    delay( autodecay * 1000 * 60 - lessdelay )
     gosub .image
 
     if ( lights == 1 ) then
