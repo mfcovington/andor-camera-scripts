@@ -69,6 +69,7 @@ if ( asc(default$) != 121 /*y*/ ) and ( asc(default$) != 89 /*Y*/ ) then
     else
         if ( dawn == 25 ) and ( dusk == 25 ) then
             print("Imaged in DD")
+            autodecay = 0
         else
             print( "DAWN="; dawn, , "DUSK="; dusk )
         endif
