@@ -279,12 +279,12 @@ return
 return
 
 .image
-    print( date$(), time$(), , , "IMAGE "; i + 1; " STARTED" )
+    i = i + 1
+    print( date$(), time$(), , , "IMAGE "; i; " STARTED" )
     SetSingleScan( exposure * 60 )
     run()
     delay(100)
 
-    i = i + 1
     i$ = str$(i)
     file1$ = outputdir$ + outputprefix$ + expt$ + "_" + i$ + ".tif"
     ExportTiff( #0, file1$, 1, 1, 0 )
