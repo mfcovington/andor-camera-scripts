@@ -100,13 +100,12 @@ endif
 print(program_name$)
 
 gosub .timestamp
+print( date$(), time$(), "EXPERIMENT STARTED" )
 if ( timestamp >= dawn ) and ( timestamp <= dusk ) then
     lights = 1
-    print( date$(), time$(), "BEGINNING EXPERIMENT" )
     gosub .turnlightson
 else
     lights = 0
-    print( date$(), time$(), "BEGINNING EXPERIMENT" )
     gosub .turnlightsoff
 endif
 
@@ -146,7 +145,6 @@ while ( i < maximages )
 
     if ( lights == 1 ) then
         gosub .turnlightsoff
-        print( date$(), time$(), , "LIGHTS OFF FOR IMAGING" )
 
         if ( autofluor == 1 ) then
             gosub .autofluor
@@ -158,7 +156,6 @@ while ( i < maximages )
     gosub .image
 
     if ( lights == 1 ) then
-        print( date$(), time$(), , "LIGHTS ON AFTER IMAGING" )
         gosub .turnlightson
     endif
 
@@ -241,14 +238,14 @@ return
     noti = i + 1
     noti$ = str$(noti)
 
-    print( date$(), time$(), , , , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " STARTED" )
+    print( date$(), time$(), , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " STARTED" )
     SetSingleScan(120)
     run()
     delay(100)
 
     file1$ = outputdir$ + outputprefix$ + expt$ + "_AUTOFLUOR_" + noti$ + ".tif"
     ExportTiff( #0, file1$, 1, 1, 0 )
-    print( date$(), time$(), , , , , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " SAVED" )
+    print( date$(), time$(), , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " SAVED" )
 
     lessdelay = lessdelay + 2733
     //2600
@@ -280,7 +277,7 @@ return
 
 .image
     i = i + 1
-    print( date$(), time$(), , , "IMAGE "; i; " STARTED" )
+    print( date$(), time$(), , , , "IMAGE "; i; " STARTED", i )
     SetSingleScan( exposure * 60 )
     run()
     delay(100)
@@ -313,13 +310,13 @@ return
 return
 
 .turnlightson
-    print( date$(), time$(), "TURNING LIGHTS ON")
+    print( date$(), time$(), , "LIGHTS ON")
     I2CBurstWrite( 41, 6, Rbits )
     I2CBurstWrite( 41, 7, Bbits )
 return
 
 .turnlightsoff
-    print( date$(), time$(), "TURNING LIGHTS OFF")
+    print( date$(), time$(), , "LIGHTS OFF")
     I2CBurstWrite( 41, 6, 0 )
     I2CBurstWrite( 41, 7, 0 )
 return
