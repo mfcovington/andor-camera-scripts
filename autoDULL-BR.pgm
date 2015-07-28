@@ -121,7 +121,7 @@ if ( starttime > timestamp + 1 ) then
         delay(60 * 1000)
         gosub .turnlightsoff
     endif
-    i = -1
+    imagecount = -1
     gosub .autofluor
     if ( lights == 1 ) then
         gosub .turnlightson
@@ -136,8 +136,8 @@ wend
 
 nexttime = starttime
 
-i = 0
-while ( i < maximages )
+imagecount = 0
+while ( imagecount < maximages )
     gosub .timestamp
 
     while ( val( left$( nexttime, 5 ) ) != val( left$( timestamp, 5 ) ) )
@@ -225,20 +225,18 @@ return
     timestamp = ( hourstamp + minstamp )
 return
 
-
-
 .autofluor
-    noti = i + 1
-    noti$ = str$(noti)
+    autofluorcount = imagecount + 1
+    autofluorcount$ = str$(autofluorcount)
 
-    print( date$(), time$(), , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " STARTED" )
+    print( date$(), time$(), , , "2-MIN AUTOFLUORESCENCE IMAGE "; autofluorcount; " STARTED" )
     SetSingleScan(120)
     run()
     delay(100)
 
-    file1$ = outputdir$ + outputprefix$ + expt$ + "_AUTOFLUOR_" + noti$ + ".tif"
+    file1$ = outputdir$ + outputprefix$ + expt$ + "_AUTOFLUOR_" + autofluorcount$ + ".tif"
     ExportTiff( #0, file1$, 1, 1, 0 )
-    print( date$(), time$(), , , "2-MIN AUTOFLUORESCENCE IMAGE "; noti; " SAVED" )
+    print( date$(), time$(), , , "2-MIN AUTOFLUORESCENCE IMAGE "; autofluorcount; " SAVED" )
 
     // 2-minute autofluorescence image + processing/saving time == ~188 seconds
     lessdelay = 188 * 1000
@@ -269,16 +267,16 @@ return
 return
 
 .image
-    i = i + 1
-    print( date$(), time$(), , , , "IMAGE "; i; " STARTED", i )
+    imagecount = imagecount + 1
+    print( date$(), time$(), , , , "IMAGE "; imagecount; " STARTED", imagecount )
     SetSingleScan( exposure * 60 )
     run()
     delay(100)
 
-    i$ = str$(i)
-    file1$ = outputdir$ + outputprefix$ + expt$ + "_" + i$ + ".tif"
+    imagecount$ = str$(imagecount)
+    file1$ = outputdir$ + outputprefix$ + expt$ + "_" + imagecount$ + ".tif"
     ExportTiff( #0, file1$, 1, 1, 0 )
-    print( date$(), time$(), , , , "IMAGE "; i; " SAVED" )
+    print( date$(), time$(), , , , "IMAGE "; imagecount; " SAVED" )
 return
 
 .startfreerun
