@@ -130,7 +130,7 @@ endif
 
 while ( starttime > timestamp )
     gosub .timestamp
-    gosub .dawndusk
+    gosub .isdawnordusk
     gosub .startfreerun
 wend
 
@@ -142,7 +142,7 @@ while ( imagecount < maximages )
 
     while ( val( left$( nexttime, 5 ) ) != val( left$( timestamp, 5 ) ) )
         gosub .timestamp
-        gosub .dawndusk
+        gosub .isdawnordusk
         gosub .startfreerun
     wend
 
@@ -254,28 +254,44 @@ return
     lessdelay = 188 * 1000
 return
 
-.dawndusk
-    if ( timestamp >= dawn ) and ( timestamp < dusk ) then
-        turnlightson = 1
-
-        if ( turnlightson - lights == 1 ) then
-            print( date$(), time$(), "DAWN" )
-            gosub .turnlightson
-            dawncounter = dawncounter + 1
+.isdawnordusk
+    if ( dawn < dusk ) then
+        if ( timestamp >= dawn ) and ( timestamp < dusk ) then
+            gosub .isdawn
+        else
+            gosub .isdusk
         endif
-
-        lights = 1
     else
-        turnlightson = 0
-
-        if ( turnlightson - lights == -1 ) then
-            print( date$(), time$(), "DUSK" )
-            gosub .turnlightsoff
-            duskcounter = duskcounter + 1
+        if ( timestamp >= dusk ) and ( timestamp < dawn ) then
+            gosub .isdusk
+        else
+            gosub .isdawn
         endif
-
-        lights = 0
     endif
+return
+
+.isdawn
+    turnlightson = 1
+
+    if ( turnlightson - lights == 1 ) then
+        print( date$(), time$(), "DAWN" )
+        gosub .turnlightson
+        dawncounter = dawncounter + 1
+    endif
+
+    lights = 1
+return
+
+.isdusk
+    turnlightson = 0
+
+    if ( turnlightson - lights == -1 ) then
+        print( date$(), time$(), "DUSK" )
+        gosub .turnlightsoff
+        duskcounter = duskcounter + 1
+    endif
+
+    lights = 0
 return
 
 .image
