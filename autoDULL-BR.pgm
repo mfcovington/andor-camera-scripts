@@ -136,7 +136,13 @@ wend
 
 nexttime = starttime
 
-imagecount = 0
+if ( dawn == dusk ) then
+    imagecount = maximages
+    print("ERROR: Dawn and Dusk can't be set to the same time.")
+else
+    imagecount = 0
+endif
+
 while ( imagecount < maximages )
     gosub .timestamp
 
